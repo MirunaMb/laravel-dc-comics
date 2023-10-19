@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Comic; // Importa la classe del modello Comic
-
+use Illuminate\View\View;
+use App\Models\Comic; // Importo la classe del modello Comic
+use Illuminate\Http\RedirectResponse;
 
 class ComicController extends Controller
 {
@@ -13,23 +14,21 @@ class ComicController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $comics = Comic::all(); // Recupero tutti i fumetti dal database
         return view('comics.index', compact('comics'));
     }
-
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         return view('comics.create');
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -37,18 +36,16 @@ class ComicController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'title'       => 'required',
-            'description' => 'required',
+        $data = $request->all();
 
-        ]);
+        // Crea e salva un nuovo comic nel database
+        $comic = Comic::create($data);
 
-        Comic::create($data); // Salvo il nuovo fumetto nel database
-        return redirect('/comics');
+        // Reindirizza alla pagina di visualizzazione del comic appena creato
+        return redirect()->route('comics.show', $comic->id);
     }
-
 
     /**
      * Display the specified resource.
@@ -56,11 +53,11 @@ class ComicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Comic $comic)
+    public function show($id): View
     {
-        return view('comics.show', compact('comic'));
+        $comics = Comic::findOrfail($id); // find() è un metodo di Laravel che cerca un elemento per id
+        return view('comics.show', compact('comics'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
