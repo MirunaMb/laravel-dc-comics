@@ -5,7 +5,7 @@
         <h2>Dati del fumetto:
             <p class="show"> {{ $comics->title }}</p>
         </h2>
-        <img class="my-3" src={{ $comics->thumb }} alt="">
+        <img class="my-3" src= "{{ $comics->thumb }}" alt="">
         <p class="card-text"><span class="show">Descrizione: </span>
         <p class="des-show">{{ $comics->description }}</p>
         </p>
